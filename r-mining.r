@@ -31,3 +31,37 @@ options(max.print = 100000)
 
 # This is the crash point
 lapply(filelist, FUN=readLines)
+
+##################################################################################
+##################################################################################
+##################################################################################
+
+# What's below should be run INSTEAD OF and not IN ADDITION TO what is above
+
+##################################################################################
+##################################################################################
+##################################################################################
+
+# This unnests tokens in the file system without using lapply first
+# the variable name here for the corpus is "d". 
+
+
+
+file_names = list.files(getwd())
+file_names = file_names[grepl("*.txt", file_names)]
+
+file_names
+
+files <- lapply(file_names, read.csv, header=F, stringsAsFactor=F)
+files <- do.call(rbind,files)
+
+files
+
+d <- tibble(txt=files)
+
+d <- d %>% 
+  mutate_all(as.character) %>% 
+  unnest_tokens(word, text)
+
+d %>%
+  unnest_tokens(ngram, txt, token="ngrams", n=2)
